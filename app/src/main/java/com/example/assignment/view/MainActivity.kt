@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         ) {
             binding.rvList.layoutManager = GridLayoutManager(this, 3)
         } else {
-            binding.rvList.layoutManager = GridLayoutManager(this, 5)
+            binding.rvList.layoutManager = GridLayoutManager(this, 7)
         }
 
 
