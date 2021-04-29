@@ -52,4 +52,5 @@ class MovieListAdapter(val context: Context) : PagingDataAdapter<Content_, Movie
             return oldItem == newItem
         }
     }
+
 }

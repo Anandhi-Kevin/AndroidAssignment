@@ -1,28 +1,24 @@
 package com.example.assignment.view
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.GridLayout.VERTICAL
+import android.text.TextUtils
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.assignment.R
 import com.example.assignment.databinding.ActivityMainBinding
 import com.example.assignment.viewmodel.MainActivityViewModel
 import com.example.assignment.viewmodel.MainViewModelFactory
-import com.example.assignment.viewmodel.SpaceItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
 
-
-
-    companion object {
-        const val MARGIN = 20//dp
-    }
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var movieListAdapter: MovieListAdapter
@@ -33,15 +29,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        setSupportActionBar(binding.toolbar.toolbar)
 
+        setTitle("Romantic Comedy")
         setupViewModel()
 
     }
 
 
-    private fun setupView() {
+    private fun getMovieList(filterText : String?) {
         lifecycleScope.launch {
-            viewModel.listData.collectLatest { pagedData ->
+            viewModel.getPagedMovieList(filterText).collectLatest { pagedData ->
                 movieListAdapter.submitData(pagedData)
             }
         }
@@ -57,19 +55,12 @@ class MainActivity : AppCompatActivity() {
             binding.rvList.layoutManager = GridLayoutManager(this, 5)
         }
 
-//        if (binding.rvList.itemDecorationCount == 1)
-//            binding.rvList.removeItemDecorationAt(0)
-//        binding.rvList.addItemDecoration(
-//            SpaceItemDecoration(
-//                dpToPx(MARGIN),
-//                false
-//            )
-//        )
+
         binding.rvList.setHasFixedSize(true)
 
         binding.rvList.adapter = movieListAdapter
 
-        setupView()
+        getMovieList("")
 
     }
 
@@ -80,16 +71,28 @@ class MainActivity : AppCompatActivity() {
         setupList()
 
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        val searchItem = menu.findItem(R.id.app_bar_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
 
-    object Config {
-        var includeEdge: Boolean = true
-        var layoutManager: String = "linear"
-        var orientation: Int = VERTICAL
-        var rtl: Boolean = false
-        var spans: Int = 1
+            override fun onQueryTextChange(newText: String): Boolean {
 
-        }
+                if(newText.length > 2 || TextUtils.isEmpty(newText))
+                getMovieList(newText)
+                return false
+            }
 
-        fun Context.dpToPx(dp: Int) = (resources.displayMetrics.density * dp).toInt()
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // task HERE
+                //on submit send entire query
+                return false
+            }
+
+        })
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
 }
