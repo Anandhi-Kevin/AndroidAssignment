@@ -1,11 +1,12 @@
 package com.example.assignment.model
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.gson.Gson
 
-class PostDataSource(val activity: Context) :  PagingSource<Int, Content_>() {
+class PostDataSource(val activity: Context, val filterValue: String?) :  PagingSource<Int, Content_>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Content_> {
         return try {
@@ -14,7 +15,7 @@ class PostDataSource(val activity: Context) :  PagingSource<Int, Content_>() {
             val jsonfile: String = activity.assets.open("page"+nextPageNumber+".json").bufferedReader().use {it.readText()}
             val response = gson.fromJson(jsonfile,PageModel::class.java)
             LoadResult.Page(
-                data = response.page.content_items.content,
+                data = filter(filterValue,response.page.content_items.content),
                 prevKey = if (nextPageNumber > 0) nextPageNumber - 1 else null,
                 nextKey = if (nextPageNumber < response.page.page_size.toInt()) nextPageNumber + 1 else null
             )
@@ -25,5 +26,17 @@ class PostDataSource(val activity: Context) :  PagingSource<Int, Content_>() {
 
     override fun getRefreshKey(state: PagingState<Int, Content_>): Int? {
         TODO("Not yet implemented")
+    }
+
+    fun filter(text : String?, displayedList: List<Content_>) : List<Content_>{
+        if(TextUtils.isEmpty(text)) return displayedList
+
+        val temp: MutableList<Content_> = ArrayList()
+        for (d in displayedList) {
+            if (d.name.toLowerCase().contains(text!!.toLowerCase())) {
+                temp.add(d)
+            }
+        }
+        return temp
     }
 }
