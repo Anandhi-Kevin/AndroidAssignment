@@ -29,15 +29,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        setSupportActionBar(binding.toolbar.toolbar)
-
         setTitle("Romantic Comedy")
         setupViewModel()
 
     }
 
 
-    private fun getMovieList(filterText : String?) {
+    private fun getMovieList(filterText: String?) {
         lifecycleScope.launch {
             viewModel.getPagedMovieList(filterText).collectLatest { pagedData ->
                 movieListAdapter.submitData(pagedData)
@@ -71,27 +69,23 @@ class MainActivity : AppCompatActivity() {
         setupList()
 
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchItem = menu.findItem(R.id.app_bar_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
-
-                if(newText.length > 2 || TextUtils.isEmpty(newText))
-                getMovieList(newText)
+                if (newText.length > 2 || TextUtils.isEmpty(newText))
+                    getMovieList(newText)
                 return false
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                // task HERE
-                //on submit send entire query
                 return false
             }
-
         })
-
         return super.onCreateOptionsMenu(menu);
     }
 
