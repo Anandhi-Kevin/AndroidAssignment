@@ -13,8 +13,10 @@ import kotlinx.coroutines.flow.Flow
 
 class MainActivityViewModel(val context: Context) : ViewModel() {
 
+
    fun getPagedMovieList(filterText : String?): Flow<PagingData<Content_>> {
-       return Pager(PagingConfig(pageSize = 20)) {
+       return Pager(PagingConfig(pageSize = 20, prefetchDistance = 1)) {
+
            PostDataSource(context,filterText)
        }.flow.cachedIn(viewModelScope)
     }
