@@ -18,4 +18,12 @@
 
 - Pushed the code to GitHub regularly at the end of each module and merge the new changes using a pull request.
 
+- Action Bar background changed with gradient touch
+
+- Screenshot included
+
+![Screenshot_1620056758](https://user-images.githubusercontent.com/83385366/116899155-d7a3d200-ac54-11eb-96b3-7d6ff2c235c2.png)
+
+![Screenshot_1620056762](https://user-images.githubusercontent.com/83385366/116899168-db375900-ac54-11eb-894b-214dae0375dc.png)
+
 
